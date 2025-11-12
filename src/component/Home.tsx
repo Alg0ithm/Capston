@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-
 export default function Home() {
   return (
     <main className="min-h-screen flex items-center bg-white">

@@ -4,8 +4,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: rgba(76, 74, 74, 0.87);
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -42,7 +42,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #9a9797;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -66,3 +66,18 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.option-btn {
+  background: #f3f4f6;     /* 비선택 */
+  border: 1px solid #e5e7eb;
+  color: #111827;
+  transition: background .15s ease, box-shadow .15s ease, transform .05s ease;
+}
+.option-btn:hover { background: #e5e7eb; }
+.option-btn[aria-pressed="true"] {
+  background: #d1d5db;     /* 선택 */
+  border-color: #9ca3af;
+  color: #111827;
+  box-shadow: 0 1px 0 rgba(0,0,0,.06);
+}
+.option-btn:active { transform: scale(0.99); }
+.btn { background-color:#9a9797; /* … */ }
