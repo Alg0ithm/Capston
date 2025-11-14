@@ -67,17 +67,278 @@ button:focus-visible {
   }
 }
 .option-btn {
-  background: #f3f4f6;     /* 비선택 */
+  flex: 1;                      /* 양쪽 버튼이 동일 너비 */
+  padding: 10px 0;
+  border-radius: 16px;          /* 캡처처럼 둥근 모서리 */
   border: 1px solid #e5e7eb;
-  color: #111827;
-  transition: background .15s ease, box-shadow .15s ease, transform .05s ease;
+  background: #f5f5f5;          /* 비선택: 연한 회색 */
+  color: #6b7280;               /* 비선택 텍스트 색 */
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, transform 0.05s ease;
 }
-.option-btn:hover { background: #e5e7eb; }
+
+/* 마우스 올렸을 때 */
+.option-btn:hover {
+  background: #e5e5e5;
+}
+
+/* 눌렀을 때 살짝 줄어드는 효과 */
+.option-btn:active {
+  transform: scale(0.98);
+}
+
+/* 선택된 상태 (aria-pressed="true") */
 .option-btn[aria-pressed="true"] {
-  background: #d1d5db;     /* 선택 */
-  border-color: #9ca3af;
-  color: #111827;
-  box-shadow: 0 1px 0 rgba(0,0,0,.06);
+  background: #9a9797;          /* 진한 회색 */
+  border-color: #9a9797;
+  color: #ffffff;               /* 흰색 글씨 */
 }
-.option-btn:active { transform: scale(0.99); }
-.btn { background-color:#9a9797; /* … */ }
+
+/* 성별/관광지 묶음 컨테이너(선택) */
+.option-group {
+  display: flex;
+  gap: 12px;
+}
+.header {
+  position: fixed;      /* 화면 상단에 고정 */
+  top: 12px;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 24px 12px;
+  text-shadow: 0 2px 10px rgba(108,123,255,.15);
+  justify-content: center;
+  background: #fff;     
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  backdrop-filter: saturate(180%) blur(8px); 
+  z-index: 1000;        
+}
+.header h1,
+.header h1 a {
+  font-weight: 800;  
+}
+
+.select-trigger {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #111827;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+.select-trigger.placeholder {
+  color: #9ca3af;
+}
+.select-trigger:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+/* ---- 바텀시트 오버레이 & 박스 ---- */
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+}
+.bottom-sheet {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 18px 18px 0 0;
+  padding: 24px 20px 20px;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+}
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.sheet-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.sheet-close {
+  border: none;
+  background: none;
+  font-size: 22px;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+/* ---- 인원 수 한 줄 ---- */
+.counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.counter-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+.counter-desc {
+  font-size: 11px;
+  color: #9ca3af;
+}
+.counter-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.counter-value {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ---- 동그란 + / - 버튼 ---- */
+.circle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #4b5563;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+.circle-btn:hover {
+  background: #f3f4f6;
+}
+.circle-btn:active {
+  transform: scale(0.96);
+}
+.circle-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ---- 바텀시트 하단 닫기 버튼 ---- */
+.bottom-close-btn {
+  margin-top: 24px;
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 16px;
+  background: #6b7280;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+.bottom-close-btn:hover {
+  background: #4b5563;
+}
+.info-text {
+  margin-top: 8px;       
+  font-size: 24px;      
+  color: #6b7280;      
+  line-height: 1.6;
+}
+.adult-section {
+  margin-bottom: 16px;
+}
+
+.adult-header {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.adult-header-main {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.adult-header-sub {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.adult-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* 한 줄 (select + - 1 +) */
+.adult-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* select + x 묶음 */
+.adult-select-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;      /* 셀렉트와 X 사이 여백 */
+  flex: 1;
+}
+
+.adult-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  font-size: 13px;
+  color: #111827;
+  flex: 1;
+}
+
+/* select 오른쪽 X */
+.adult-remove {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.adult-remove:hover {
+  color: #6b7280;
+}
+
+/* + 동반 성인 추가 */
+.adult-add-btn {
+  margin-top: 6px;
+  border: none;
+  background: none;
+  padding: 4px 0;
+  font-size: 13px;
+  color: #6b7280;
+  cursor: pointer;
+}
+.adult-add-btn:hover {
+  color: #4b5563;
+}

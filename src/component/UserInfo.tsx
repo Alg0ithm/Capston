@@ -19,25 +19,41 @@ export default function UserInfo() {
         </p>
 
         <section className="mt-6">
-            <h3 className="text-sm font-medium mb-2">성별</h3>
-            <div className="grid grid-cols-2 gap-3">
+        <h3 className="text-sm font-medium mb-2">성별</h3>
+        <div className="option-group">
             {([
-                { value: "male", label: "남성" },
-                { value: "female", label: "여성" },
+            { value: "male", label: "남성" },
+            { value: "female", label: "여성" },
             ] as const).map(({ value, label }) => (
-                <button
+            <button
                 type="button"
                 key={value}
                 onClick={() => setGender(value)}
-                className="option-btn h-12 rounded-xl text-sm font-semibold"
-              aria-pressed={gender === value}
-                >
+                className="option-btn"
+                aria-pressed={gender === value}
+            >
                 {label}
-                </button>
+            </button>
+            ))}
+        </div>
+        </section>
+
+        <section className="mt-6">
+            <h3 className="text-sm font-medium mb-2">관광지</h3>
+            <div className="option-group">
+            {(["푸꾸옥", "나트랑"] as const).map((d) => (
+            <button
+                type="button"
+                key={d}
+                onClick={() => setDestination(d)}
+                className="option-btn"
+                aria-pressed={destination === d}
+                >
+              {d}
+            </button>
             ))}
             </div>
         </section>
-
         <section className="mt-6">
             <h3 className="text-sm font-medium mb-2">나이대</h3>
             <select
@@ -55,22 +71,7 @@ export default function UserInfo() {
             </select>
         </section>
        
-        <section className="mt-6">
-            <h3 className="text-sm font-medium mb-2">관광지</h3>
-            <div className="grid grid-cols-2 gap-3">
-            {(["푸꾸옥", "나트랑"] as const).map((d) => (
-                <button
-                type="button"
-                key={d}
-                onClick={() => setDestination(d)}
-                className="option-btn h-12 rounded-xl text-sm font-semibold"
-                aria-pressed={destination === d}
-                >
-              {d}
-            </button>
-            ))}
-            </div>
-        </section>
+        
         <button
             disabled={!gender || !ageBand || !destination}
             onClick={next}
