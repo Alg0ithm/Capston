@@ -9,7 +9,10 @@ export default function UserInfo() {
 
     const next = () => {
     nav("/user-info2");
-  };
+    };
+    const prev =() =>{
+        nav("/");
+    }
 
   return (
         <main className="min-h-screen px-6 py-6 ">
@@ -71,7 +74,12 @@ export default function UserInfo() {
             </select>
         </section>
        
-        
+        <button
+            onClick={prev}
+            className="mt-8 w-full h-14 rounded-2xl bg-gray-800 text-white disabled:bg-gray-300"
+            >
+            이전
+        </button>
         <button
             disabled={!gender || !ageBand || !destination}
             onClick={next}
