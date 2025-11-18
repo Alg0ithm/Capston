@@ -365,21 +365,37 @@ button:focus-visible {
   color: #9ca3af;
 }
 
+.relation-title {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.relation-title-main {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.relation-title-sub {
+  font-size: 11px;
+  color: #9ca3af;
+}
 /* 칩 전체 영역 */
 .relation-group {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px 12px;       /* 행/열 간격 */
+  gap: 10px 12px;     
   margin-top: 10px;
 }
 
-/* 개별 칩 버튼 */
+
 .relation-chip {
   padding: 8px 16px;
-  border-radius: 999px;          /* 완전 동글동글 */
+  border-radius: 999px;     
   border: 1px solid #e5e7eb;
-  background: #f5f5f5;           /* 비선택: 연한 회색 */
+  background: #f5f5f5;          
   color: #4b5563;
   font-size: 14px;
   font-weight: 500;
@@ -392,14 +408,14 @@ button:focus-visible {
     transform 0.05s ease;
 }
 
-/* hover */
+
 .relation-chip:hover {
   background: #e5e5e5;
 }
 
-/* 선택된 칩 */
+
 .relation-chip[aria-pressed="true"] {
-  background: #9a9797;           /* 진한 회색 */
+  background: #9a9797;          
   border-color: #9a9797;
   color: #ffffff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.12);
@@ -410,7 +426,7 @@ button:focus-visible {
   transform: scale(0.97);
 }
 
-/* ===== 아래쪽 이전/다음 버튼 ===== */
+
 .action-buttons {
   margin-top: 32px;
   display: flex;
@@ -432,13 +448,11 @@ button:focus-visible {
     box-shadow 0.15s ease;
 }
 
-/* 이전(연한 회색) */
 .nav-btn--secondary {
   background: #e5e7eb;
   color: #4b5563;
 }
 
-/* 다음(진한 회색) */
 .nav-btn--primary {
   background: #9a9797;
   color: #ffffff;

@@ -79,8 +79,8 @@ export default function UserInfo3() {
             </div>
         </section>
             <p className="info-text">
-            희망하는 여행 테마를 선택해주세요.
-        </p>
+            <br/>희망하는 여행 테마를 선택해주세요.
+            </p>
         <section className="theme-section">
         <div className="theme-header">
             <div className="theme-title-left">

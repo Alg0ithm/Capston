@@ -142,8 +142,8 @@ export default function UserInfo2() {
         </div>
         <div className="counter-row">
           <div>
-            <div className="counter-label">소아</div>
-            <div className="counter-desc">2~12세</div>
+            <div className="counter-label">청소년</div>
+            <div className="counter-desc">13~19세</div>
           </div>
           <div className="counter-controls">
             <button
@@ -169,7 +169,7 @@ export default function UserInfo2() {
         <div className="counter-row">
           <div>
             <div className="counter-label">유아</div>
-            <div className="counter-desc">2세 미만</div>
+            <div className="counter-desc">13세 미만</div>
           </div>
           <div className="counter-controls">
             <button
