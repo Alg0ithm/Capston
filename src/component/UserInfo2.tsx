@@ -1,73 +1,103 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-type AdultAgeBand = "20대" | "30대" | "40대" | "50대" | "60대 이상";
+// -----------------------------
+// 타입 정의
+// -----------------------------
+type AgeBand =
+  | "0~9세"
+  | "10대"
+  | "20대"
+  | "30대"
+  | "40대"
+  | "50대"
+  | "60대";
 
-interface AdultGroup {
+interface AgeGroup {
   id: number;
-  ageBand: AdultAgeBand;
+  ageBand: AgeBand;
   count: number;
 }
 
-const adultAgeOptions: AdultAgeBand[] = [
+const ageBandOptions: AgeBand[] = [
+  "0~9세",
+  "10대",
   "20대",
   "30대",
   "40대",
   "50대",
-  "60대 이상",
+  "60대",
 ];
+
+const relationOptions = [
+  "형제/자매",
+  "친인척",
+  "배우자",
+  "자녀",
+  "친구",
+  "연인",
+  "동료",
+  "부모",
+  "친목 단체/모임",
+  "기타",
+] as const;
+
+type RelationType = (typeof relationOptions)[number];
 
 export default function UserInfo2() {
   const nav = useNavigate();
-  const [adultGroups] = useState<AdultGroup[]>([
-    { id: 1, ageBand: "20대", count: 0 },
+  const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([
+    { id: 1, ageBand: "20대", count: 0 }, // 🔹 기본값: 20대
   ]);
-  const [adultGroupsState, setAdultGroups] = useState<AdultGroup[]>(adultGroups);
-  const [child, setChild] = useState(0);
-  const [infant, setInfant] = useState(0);
+  const [relations, setRelations] = useState<RelationType[]>([]);
+  const total = ageGroups.reduce((sum, g) => sum + g.count, 0);
 
-  const totalAdult = adultGroupsState.reduce((sum, g) => sum + g.count, 0);
-  const total = totalAdult + child + infant;
-
-  const prev = () => {
-    nav("/user-info");
-  };
-
+  // -----------------------------
+  // 핸들러
+  // -----------------------------
+  const prev = () => nav("/user-info");
   const next = () => {
-    if (total === 0) return;
+    if (total === 0) return; // 아무도 없으면 다음으로 못 감
     nav("/user-info3");
   };
 
-  const addAdultGroup = () => {
-    setAdultGroups((prev) => [
+  const addAgeGroup = () => {
+    setAgeGroups((prev) => [
       ...prev,
       { id: Date.now(), ageBand: "20대", count: 0 },
     ]);
   };
 
-  const removeAdultGroup = (id: number) => {
-    setAdultGroups((prev) =>
+  const removeAgeGroup = (id: number) => {
+    setAgeGroups((prev) =>
       prev.length <= 1 ? prev : prev.filter((g) => g.id !== id),
     );
   };
-
-  const changeAdultAge = (id: number, ageBand: AdultAgeBand) => {
-    setAdultGroups((prev) =>
+  const changeAgeBand = (id: number, ageBand: AgeBand) => {
+    setAgeGroups((prev) =>
       prev.map((g) => (g.id === id ? { ...g, ageBand } : g)),
     );
   };
 
-  const changeAdultCount = (id: number, delta: number) => {
-    setAdultGroups((prev) =>
+  // 인원 수 +/- 변경
+  const changeCount = (id: number, delta: number) => {
+    setAgeGroups((prev) =>
       prev.map((g) =>
-        g.id === id ? { ...g, count: Math.max(0, g.count + delta) } : g,
+        g.id === id
+          ? { ...g, count: Math.max(0, g.count + delta) }
+          : g,
       ),
+    );
+  };
+  const toggleRelation = (rel: RelationType) => {
+    setRelations((prev) =>
+      prev.includes(rel) ? prev.filter((r) => r !== rel) : [...prev, rel],
     );
   };
 
   return (
     <main className="min-h-screen px-6 py-6">
-      <h2 className="text-lg font-semibold">여행자 정보</h2>
+      <h2 className="text-lg font-semibold">동반자 정보</h2>
       <p className="info-text">
         동반자 정보를 알려주세요.
         Ai가 상세 일정을 제공해드립니다.
@@ -76,26 +106,28 @@ export default function UserInfo2() {
       <section className="mt-6">
         <h3 className="text-sm font-medium mb-2">여행 동반자수</h3>
         <div style={{ marginBottom: 8, fontSize: 13, color: "#6b7280" }}>
-          총 {total}명 (성인 {totalAdult} · 소아 {child} · 유아 {infant})
+          총 {total}명
         </div>
+
+        {/* 연령대 + 인원 수 */}
         <div className="adult-section">
           <div className="adult-header">
-            <span className="adult-header-main">성인</span>
-            <span className="adult-header-sub">20세 이상</span>
+            <span className="adult-header-main">연령대</span>
+            <span className="adult-header-sub">동반자 나이대 선택</span>
           </div>
 
           <div className="adult-rows">
-            {adultGroupsState.map((g) => (
+            {ageGroups.map((g) => (
               <div key={g.id} className="adult-row">
                 <div className="adult-select-wrapper">
                   <select
                     className="adult-select"
                     value={g.ageBand}
                     onChange={(e) =>
-                      changeAdultAge(g.id, e.target.value as AdultAgeBand)
+                      changeAgeBand(g.id, e.target.value as AgeBand)
                     }
                   >
-                    {adultAgeOptions.map((opt) => (
+                    {ageBandOptions.map((opt) => (
                       <option key={opt} value={opt}>
                         {opt}
                       </option>
@@ -105,16 +137,17 @@ export default function UserInfo2() {
                   <button
                     type="button"
                     className="adult-remove"
-                    onClick={() => removeAdultGroup(g.id)}
+                    onClick={() => removeAgeGroup(g.id)}
                   >
                     ×
                   </button>
                 </div>
+
                 <div className="counter-controls">
                   <button
                     type="button"
                     className="circle-btn"
-                    onClick={() => changeAdultCount(g.id, -1)}
+                    onClick={() => changeCount(g.id, -1)}
                     disabled={g.count === 0}
                   >
                     −
@@ -123,7 +156,7 @@ export default function UserInfo2() {
                   <button
                     type="button"
                     className="circle-btn"
-                    onClick={() => changeAdultCount(g.id, +1)}
+                    onClick={() => changeCount(g.id, +1)}
                   >
                     +
                   </button>
@@ -135,78 +168,51 @@ export default function UserInfo2() {
           <button
             type="button"
             className="adult-add-btn"
-            onClick={addAdultGroup}
+            onClick={addAgeGroup}
           >
-            + 동반 성인 추가
+            + 동반자 연령대 추가
           </button>
         </div>
-        <div className="counter-row">
-          <div>
-            <div className="counter-label">청소년</div>
-            <div className="counter-desc">13~19세</div>
-          </div>
-          <div className="counter-controls">
-            <button
-              type="button"
-              className="circle-btn"
-              onClick={() => setChild((v) => Math.max(0, v - 1))}
-              disabled={child === 0}
-            >
-              −
-            </button>
-            <span className="counter-value">{child}</span>
-            <button
-              type="button"
-              className="circle-btn"
-              onClick={() => setChild((v) => v + 1)}
-            >
-              +
-            </button>
-          </div>
-        </div>
 
-        {/* ---- 유아 ---- */}
-        <div className="counter-row">
-          <div>
-            <div className="counter-label">유아</div>
-            <div className="counter-desc">13세 미만</div>
+        {/* 동반자 관계 선택 */}
+        <p className="info-text mt-8">
+          여행 동반자와의 관계를 선택해주세요. (복수 선택 가능)
+        </p>
+        <section className="relation-section">
+          <div className="relation-group">
+            {relationOptions.map((rel) => (
+              <button
+                key={rel}
+                type="button"
+                onClick={() => toggleRelation(rel)}
+                className="relation-chip"
+                aria-pressed={relations.includes(rel)}
+              >
+                {rel}
+              </button>
+            ))}
           </div>
-          <div className="counter-controls">
-            <button
-              type="button"
-              className="circle-btn"
-              onClick={() => setInfant((v) => Math.max(0, v - 1))}
-              disabled={infant === 0}
-            >
-              −
-            </button>
-            <span className="counter-value">{infant}</span>
-            <button
-              type="button"
-              className="circle-btn"
-              onClick={() => setInfant((v) => v + 1)}
-            >
-              +
-            </button>
-          </div>
-        </div>
+        </section>
       </section>
 
-      {/*  이전 / 다음 버튼 */}
-      <button
-        type="button"
-        onClick={prev}
-        className="mt-8 w-full h-14 rounded-2xl bg-gray-800 text-white disabled:bg-gray-300"
-      >
-        이전
-      </button>
-      <button
-        type="button"
-        onClick={next}
-        className="mt-4 w-full h-14 rounded-2xl bg-gray-800 text-white disabled:bg-gray-300"
-      >
-        다음
-      </button>
+      {/* 이전 / 다음 버튼 */}
+      <div className="action-buttons">
+        <button
+          type="button"
+          onClick={prev}
+          className="nav-btn nav-btn--secondary"
+        >
+          이전
+        </button>
+        <button
+          type="button"
+          onClick={next}
+          className="nav-btn nav-btn--primary"
+          disabled={total === 0}
+        >
+          다음
+        </button>
+      </div>
     </main>
   );
 }

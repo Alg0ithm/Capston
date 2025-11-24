@@ -4,6 +4,7 @@ import Home from "./component/Home";
 import UserInfo from "./component/UserInfo";
 import UserInfo2 from "./component/UserInfo2";
 import UserInfo3 from "./component/UserInfo3";
+import Result from "./component/Result";
 import './App.css'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/user-info" element={<UserInfo />} />
           <Route path="/user-info2" element={<UserInfo2 />} />
           <Route path="/user-info3" element={<UserInfo3 />} />
+          <Route path="/result" element={<Result />} />
       </Routes>
       </div>
     </BrowserRouter>

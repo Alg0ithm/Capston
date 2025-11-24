@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function UserInfo() {
     const nav = useNavigate();
     const [gender, setGender] = useState<"male"|"female"|"prefer_not_to_say" | null>(null);
-    const [ageBand, setAgeBand] = useState<"10s"|"20s"|"30s"|"40s"|"50s"|"60s+" | null>(null);
+    const [ageBand, setAgeBand] = useState<"10대"|"20대"|"30대"|"40대"|"50대"|"60대" | "">("");
     const [destination, setDestination] = useState<"푸꾸옥"|"나트랑" | null>(null);
 
     const next = () => {
@@ -13,7 +13,7 @@ export default function UserInfo() {
     const prev =() =>{
         nav("/");
     }
-
+    type AgeBand = "10대" | "20대" | "30대" | "40대" | "50대" | "60대";
   return (
         <main className="min-h-screen px-6 py-6 ">
         <h2 className="text-lg font-semibold">여행자 정보</h2>
@@ -58,35 +58,42 @@ export default function UserInfo() {
             </div>
         </section>
         <section className="mt-6">
-            <h3 className="text-sm font-medium mb-2">나이대</h3>
-            <select
-            className="w-full h-12 rounded-xl bg-gray-100 px-4"
-            value={ageBand ?? ""}
-            onChange={(e)=>setAgeBand(e.target.value as any)}
-            >
-            <option value="" disabled>나이대를 선택하세요</option>
-            <option value="10s">10대</option>
-            <option value="20s">20대</option>
-            <option value="30s">30대</option>
-            <option value="40s">40대</option>
-            <option value="50s">50대</option>
-            <option value="60s+">60대 이상</option>
-            </select>
+            <h3 className="age-label">나이대</h3>
+                <div className="age-select-wrapper">
+                    <select
+                    className="age-select"
+                    value={ageBand}
+                    onChange={(e) => setAgeBand(e.target.value as AgeBand)}
+                    >
+                    <option value="">나이대를 선택하세요</option>
+                    <option value="10대">10대</option>
+                    <option value="20대">20대</option>
+                    <option value="30대">30대</option>
+                    <option value="40대">40대</option>
+                    <option value="50대">50대</option>
+                    <option value="60대">60대</option>
+                    </select>
+                </div>
         </section>
        
+        {/* 이전 / 다음 버튼 */}
+      <div className="action-buttons">
         <button
-            onClick={prev}
-            className="mt-8 w-full h-14 rounded-2xl bg-gray-800 text-white disabled:bg-gray-300"
-            >
-            이전
+          type="button"
+          onClick={prev}
+          className="nav-btn nav-btn--secondary"
+        >
+          이전
         </button>
         <button
-            disabled={!gender || !ageBand || !destination}
-            onClick={next}
-            className="mt-8 w-full h-14 rounded-2xl bg-gray-800 text-white disabled:bg-gray-300"
-            >
-            다음
+          type="button"
+          onClick={next}
+          className="nav-btn nav-btn--primary"
+          disabled={gender === null || ageBand === null || destination === null}
+        >
+          다음
         </button>
+      </div>
     </main>
   );
 }
