@@ -1,7 +1,0 @@
-# 백엔드
-fastapi
-uvicorn
-
-pydantic
-numpy
-sentence-transformers
