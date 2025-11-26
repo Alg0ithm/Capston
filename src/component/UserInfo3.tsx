@@ -112,7 +112,7 @@ export default function UserInfo3() {
           className="nav-btn nav-btn--primary"
           disabled={days <= 0 || themes.length === 0}
         >
-          다음
+          추천받기
         </button>
       </div>
     </main>

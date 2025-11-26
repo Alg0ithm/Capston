@@ -104,18 +104,10 @@ export default function UserInfo2() {
       </p>
 
       <section className="mt-6">
-        <h3 className="text-sm font-medium mb-2">여행 동반자수</h3>
-        <div style={{ marginBottom: 8, fontSize: 13, color: "#6b7280" }}>
-          총 {total}명
-        </div>
+        <h3 className="text-sm font-medium mb-2">여행 동반자수 총 {total}명</h3>
 
         {/* 연령대 + 인원 수 */}
         <div className="adult-section">
-          <div className="adult-header">
-            <span className="adult-header-main">연령대</span>
-            <span className="adult-header-sub">동반자 나이대 선택</span>
-          </div>
-
           <div className="adult-rows">
             {ageGroups.map((g) => (
               <div key={g.id} className="adult-row">
