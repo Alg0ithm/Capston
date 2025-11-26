@@ -1,0 +1,5 @@
+.env
+travel.db
+embeddings.pkl
+__pycache__/
+venv/
