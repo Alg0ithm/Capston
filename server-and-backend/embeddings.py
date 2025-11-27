@@ -34,32 +34,19 @@ def user_format(data: dict) -> str:
 
 def build_pickle():
     logs = logs_from_db()
-    total = len(logs)
-    print(f"총 {total}개의 여행로그를 불러왔습니다.")
-
-    # 🔸 개발용: 임베딩 돌릴 로그 개수 제한
-    MAX_LOGS = 30  # 너무 오래 걸리면 10, 20 이런 식으로 더 줄여도 됨
-    if total > MAX_LOGS:
-        print(f"개발 편의를 위해 상위 {MAX_LOGS}개만 임베딩 생성합니다.")
-        logs = logs[:MAX_LOGS]
 
     trip_ids = []
     docs = []
     vectors = []
 
-    for idx, log in enumerate(logs, start=1):
+    for log in logs:
         tid = str(log["trip_id"])
 
         text = log_format(log)
         vec = model.encode(text, normalize_embeddings=True)
 
         trip_ids.append(tid)
-        docs.append(text)
         vectors.append(vec)
-
-        # 진행 상황 찍기 (선택)
-        if idx % 10 == 0 or idx == len(logs):
-            print(f"[임베딩 진행] {idx}/{len(logs)} 개 완료")
 
     embeddings = np.array(vectors, dtype="float32")
 
@@ -73,7 +60,6 @@ def build_pickle():
         pickle.dump(data, f)
 
     print("여행로그 임베딩 및 vector 저장 완료")
-
 
 def load_embeddings():
     if not os.path.exists(PICKLE_PATH):
