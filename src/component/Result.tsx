@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// src/Result.tsx
+import { useNavigate, useLocation } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 
 // 1. 요청 타입 
@@ -41,6 +41,29 @@ type RecommendResponse = {
 
 export default function Result() {
   const nav = useNavigate();
+  const location = useLocation();
+
+  // 🔹 UserInfo3에서 nav("/result", { state: body }) 로 넘긴 값만 사용
+  const requestBody = location.state as RecommendRequest | undefined;
+
+  // 만약 주소창에 직접 /result 치고 들어온 경우 등
+  if (!requestBody) {
+    return (
+      <main className="min-h-screen px-6 py-6">
+        <h2 className="text-lg font-semibold">추천 결과</h2>
+        <p className="mt-4 text-sm text-red-500">
+          이전 화면에서 여행 정보를 먼저 입력해주세요.
+        </p>
+        <button
+          type="button"
+          onClick={() => nav("/user-info")}
+          className="mt-6 w-full h-14 rounded-2xl bg-gray-800 text-white"
+        >
+          처음으로 이동
+        </button>
+      </main>
+    );
+  }
 
   const {
     data,
@@ -51,20 +74,8 @@ export default function Result() {
     "http://localhost:8000/recommend",
   );
 
-  //  지금은 통신 테스트용으로 하드코딩
-  // 나중에는 UserInfo / UserInfo2 / UserInfo3 값으로 채우면 됨
-  const [body] = useState<RecommendRequest>({
-    region: "나트랑",
-    categories: ["투어/액티비티"],
-    gender: "여자",
-    days: 3,
-    age: "20대",
-    companion_relations: ["친구"],
-    companion_age_groups: ["20대"],
-  });
-
   const handleRecommend = () => {
-    fetchRecommend(body).catch(() => {
+    fetchRecommend(requestBody).catch(() => {
       // error는 상태로 이미 관리 중
     });
   };
@@ -117,9 +128,7 @@ export default function Result() {
                     <div className="font-medium">{opt.option_name}</div>
                     <div className="text-gray-500">
                       {opt.prices
-                        .map(
-                          (p) => `${p.age_type}: ${p.price_text}`,
-                        )
+                        .map((p) => `${p.age_type}: ${p.price_text}`)
                         .join(" / ")}
                     </div>
                   </div>
@@ -140,7 +149,7 @@ export default function Result() {
 
       <button
         type="button"
-        onClick={() => nav("/user-info3")}
+        onClick={() => nav("/user-info3", { state: requestBody })}
         className="mt-10 w-full h-14 rounded-2xl bg-gray-100 text-gray-800"
       >
         이전

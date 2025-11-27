@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const themeOptions = [
   "투어/액티비티",
@@ -9,10 +10,26 @@ const themeOptions = [
 ] as const;
 
 type ThemeType = (typeof themeOptions)[number];
+type RecommendRequest = {
+  region: string;
+  categories: string[];
+  gender: string;
+  age: string;
+  days: number;
+  companion_relations: string[];
+  companion_age_groups: string[];
+};
 
 export default function UserInfo3() {
   const nav = useNavigate();
-
+  const location = useLocation();
+    const base = (location.state ?? {}) as {
+    region?: string;
+    gender?: string;
+    age?: string;
+    companion_relations?: string[];
+    companion_age_groups?: string[];
+  };
   const [themes, setThemes] = useState<ThemeType[]>([]);
   const [days, setDays] = useState<number>(3); // 🔹 기본 3일
 
@@ -25,12 +42,23 @@ export default function UserInfo3() {
   };
 
   const prev = () => {
-    nav("/user-info2");
+    nav("/user-info2", { state: base });
   };
 
   const next = () => {
     if (days <= 0 || themes.length === 0) return;
-    nav("/result");
+    const body: RecommendRequest = {
+      region: base.region ?? "나트랑",
+      gender: base.gender ?? "여자",
+      age: base.age ?? "20대",
+      days,
+      categories: themes,
+      companion_relations: base.companion_relations ?? [],
+      companion_age_groups: base.companion_age_groups ?? [],
+    };
+
+    // 👉 Result로 최종 요청 바디 넘김
+    nav("/result", { state: body });
   };
 
   return (
