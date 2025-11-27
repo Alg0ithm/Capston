@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useLocation } from "react-router-dom";
 // -----------------------------
 // 타입 정의
 // -----------------------------
@@ -46,6 +46,13 @@ type RelationType = (typeof relationOptions)[number];
 
 export default function UserInfo2() {
   const nav = useNavigate();
+  const location = useLocation();
+  const base = (location.state ?? {}) as {
+    region?: string;
+    gender?: string;
+    age?: string;
+  };
+
   const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([
     { id: 1, ageBand: "20대", count: 0 }, // 🔹 기본값: 20대
   ]);
@@ -55,10 +62,21 @@ export default function UserInfo2() {
   // -----------------------------
   // 핸들러
   // -----------------------------
-  const prev = () => nav("/user-info");
+  const prev = () => {nav("/user-info", { state: base });}
   const next = () => {
-    if (total === 0) return; // 아무도 없으면 다음으로 못 감
-    nav("/user-info3");
+    if (total === 0) return; 
+    const companion_relations = relations;
+    const companion_age_groups = ageGroups
+      .filter((g) => g.count > 0)
+      .flatMap((g) => Array(g.count).fill(g.ageBand));
+
+    nav("/user-info3", {
+      state: {
+        ...base,                 // region, gender, age 그대로 전달
+        companion_relations,     // RelationType[]
+        companion_age_groups,    // AgeBand[] (인원 수만큼)
+      },
+    });
   };
 
   const addAgeGroup = () => {
@@ -104,18 +122,10 @@ export default function UserInfo2() {
       </p>
 
       <section className="mt-6">
-        <h3 className="text-sm font-medium mb-2">여행 동반자수</h3>
-        <div style={{ marginBottom: 8, fontSize: 13, color: "#6b7280" }}>
-          총 {total}명
-        </div>
+        <h3 className="text-sm font-medium mb-2">여행 동반자수 총 {total}명</h3>
 
         {/* 연령대 + 인원 수 */}
         <div className="adult-section">
-          <div className="adult-header">
-            <span className="adult-header-main">연령대</span>
-            <span className="adult-header-sub">동반자 나이대 선택</span>
-          </div>
-
           <div className="adult-rows">
             {ageGroups.map((g) => (
               <div key={g.id} className="adult-row">

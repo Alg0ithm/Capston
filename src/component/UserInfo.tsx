@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+type GenderType = "남자" | "여자";
+type AgeBand = "10대" | "20대" | "30대" | "40대" | "50대" | "60대";
 export default function UserInfo() {
     const nav = useNavigate();
     const [gender, setGender] = useState<"male"|"female"|"prefer_not_to_say" | null>(null);
@@ -8,8 +9,16 @@ export default function UserInfo() {
     const [destination, setDestination] = useState<"푸꾸옥"|"나트랑" | null>(null);
 
     const next = () => {
-    nav("/user-info2");
-    };
+    if (!gender || !ageBand || !destination) return;
+
+    nav("/user-info2", {
+      state: {
+        region: destination, // "푸꾸옥" | "나트랑"
+        gender,              // "남자" | "여자"
+        age: ageBand,        // "20대" 
+      },
+    });
+  };
     const prev =() =>{
         nav("/");
     }

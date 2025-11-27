@@ -8,9 +8,8 @@ import numpy as np
 
 from embeddings import load_embeddings, embedding_query
 from db import *
-
 from rag_pipeline import create_report
-
+ 
 app = FastAPI(title="Travel Kiosk API")
 
 # CORS 허용

@@ -1,24 +1,23 @@
-# FastAPI 서버
+
 fastapi
 uvicorn
 pydantic
 numpy
 
-# Sentence Embeddings
 sentence-transformers
 
-# .env 사용
+
 python-dotenv
 
-# RAG / LangChain (최신 버전)
+
 langchain
 langchain-core
 langchain-community
 langchain-google-genai
 langchain-text-splitters
 
-# PDF 로딩
+
 pypdf
 
-# 벡터DB
+
 faiss-cpu
