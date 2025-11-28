@@ -143,7 +143,7 @@ export default function Result() {
           {report}
         </section>
       )}
-
+      <div className="action-buttons">
       <button
         type="button"
         onClick={() => nav("/user-info3", { state: requestBody })}
@@ -151,6 +151,7 @@ export default function Result() {
       >
         이전
       </button>
+      </div>
     </main>
   );
 }
