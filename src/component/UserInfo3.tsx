@@ -57,15 +57,13 @@ export default function UserInfo3() {
       companion_age_groups: base.companion_age_groups ?? [],
     };
 
-    // 👉 Result로 최종 요청 바디 넘김
+    // Result로 요청 바디 넘김
     nav("/result", { state: body });
   };
 
   return (
     <main className="min-h-screen px-6 py-6">
       <h2 className="text-lg font-semibold">여행 정보</h2>
-
-      {/* 🔹 여행 기간 (키오스크용 단순 카운터) */}
       <p className="info-text">
         여행 기간을 선택해주세요.
       </p>
@@ -98,7 +96,7 @@ export default function UserInfo3() {
         </div>
       </section>
 
-      {/* 🔹 여행 테마 선택 */}
+      {/* 여행 테마 선택 */}
       <p className="info-text">
         <br />
         희망하는 여행 테마를 선택해주세요.
@@ -125,7 +123,7 @@ export default function UserInfo3() {
         </div>
       </section>
 
-      {/* 🔹 이전 / 다음 버튼 */}
+      {/* 이전 / 다음 버튼 */}
       <div className="action-buttons">
         <button
           type="button"

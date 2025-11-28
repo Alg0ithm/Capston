@@ -1,4 +1,3 @@
-// src/Result.tsx
 import { useNavigate, useLocation } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 
@@ -42,11 +41,10 @@ type RecommendResponse = {
 export default function Result() {
   const nav = useNavigate();
   const location = useLocation();
-
-  // 🔹 UserInfo3에서 nav("/result", { state: body }) 로 넘긴 값만 사용
+  //  UserInfo3에서 nav("/result", { state: body }) 로 넘긴 값만 사용
   const requestBody = location.state as RecommendRequest | undefined;
 
-  // 만약 주소창에 직접 /result 치고 들어온 경우 등
+ 
   if (!requestBody) {
     return (
       <main className="min-h-screen px-6 py-6">
@@ -76,7 +74,6 @@ export default function Result() {
 
   const handleRecommend = () => {
     fetchRecommend(requestBody).catch(() => {
-      // error는 상태로 이미 관리 중
     });
   };
 
@@ -105,7 +102,7 @@ export default function Result() {
         </p>
       )}
 
-      {/* 🔹 상품 카드 리스트 */}
+      {/* 상품 카드 리스트 */}
       <section className="mt-6 space-y-3">
         {products.map((item) => (
           <div
@@ -139,7 +136,7 @@ export default function Result() {
         ))}
       </section>
 
-      {/* 🔹 AI 설명(report) 블록 */}
+      {/* AI 설명(report) 블록 */}
       {report && (
         <section className="mt-8 p-4 rounded-xl bg-gray-50 text-sm text-gray-700 whitespace-pre-line">
           <h3 className="font-semibold mb-2">추천 설명</h3>

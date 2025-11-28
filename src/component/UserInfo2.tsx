@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-// -----------------------------
-// 타입 정의
-// -----------------------------
+
 type AgeBand =
   | "0~9세"
   | "10대"
@@ -59,9 +57,6 @@ export default function UserInfo2() {
   const [relations, setRelations] = useState<RelationType[]>([]);
   const total = ageGroups.reduce((sum, g) => sum + g.count, 0);
 
-  // -----------------------------
-  // 핸들러
-  // -----------------------------
   const prev = () => {nav("/user-info", { state: base });}
   const next = () => {
     if (total === 0) return; 
@@ -97,7 +92,7 @@ export default function UserInfo2() {
     );
   };
 
-  // 인원 수 +/- 변경
+  // 인원 수 변경
   const changeCount = (id: number, delta: number) => {
     setAgeGroups((prev) =>
       prev.map((g) =>
