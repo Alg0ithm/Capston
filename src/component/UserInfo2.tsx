@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-// -----------------------------
-// 타입 정의
-// -----------------------------
 type AgeBand =
   | "0~9세"
   | "10대"
@@ -46,19 +44,34 @@ type RelationType = (typeof relationOptions)[number];
 
 export default function UserInfo2() {
   const nav = useNavigate();
+  const location = useLocation();
+  const base = (location.state ?? {}) as {
+    region?: string;
+    gender?: string;
+    age?: string;
+  };
+
   const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([
     { id: 1, ageBand: "20대", count: 0 }, // 🔹 기본값: 20대
   ]);
   const [relations, setRelations] = useState<RelationType[]>([]);
   const total = ageGroups.reduce((sum, g) => sum + g.count, 0);
 
-  // -----------------------------
-  // 핸들러
-  // -----------------------------
-  const prev = () => nav("/user-info");
+  const prev = () => {nav("/user-info", { state: base });}
   const next = () => {
-    if (total === 0) return; // 아무도 없으면 다음으로 못 감
-    nav("/user-info3");
+    if (total === 0) return; 
+    const companion_relations = relations;
+    const companion_age_groups = ageGroups
+      .filter((g) => g.count > 0)
+      .flatMap((g) => Array(g.count).fill(g.ageBand));
+
+    nav("/user-info3", {
+      state: {
+        ...base,                 // region, gender, age 그대로 전달
+        companion_relations,     // RelationType[]
+        companion_age_groups,    // AgeBand[] (인원 수만큼)
+      },
+    });
   };
 
   const addAgeGroup = () => {
@@ -79,7 +92,7 @@ export default function UserInfo2() {
     );
   };
 
-  // 인원 수 +/- 변경
+  // 인원 수 변경
   const changeCount = (id: number, delta: number) => {
     setAgeGroups((prev) =>
       prev.map((g) =>
