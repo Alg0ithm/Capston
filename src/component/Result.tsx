@@ -85,6 +85,7 @@ export default function Result() {
   const products = data?.products ?? [];
   const report = data?.report ?? "";
   const reportBlocks = report ? report.split(/\n{2,}/) : [];
+  const topProducts = products.slice(0, 5);
   return (
     <main className="min-h-screen px-6 py-6">
       <h2 className="text-lg font-semibold">추천 결과</h2>
@@ -114,62 +115,35 @@ export default function Result() {
       <section className="mt-6">
         <h3 className="text-sm font-medium mb-3">
           추천 패키지
-          {products.length > 0 && (
+          {topProducts.length > 0 && (
             <span className="ml-1 text-xs text-gray-400">
-              ({products.length}개)
+              ({topProducts.length}개)
             </span>
           )}
         </h3>
 
-        {data && products.length === 0 ? (
+        {data && topProducts.length === 0 ? (
           <p className="text-sm text-gray-500">
             조건에 맞는 추천 상품을 찾지 못했습니다.
           </p>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {products.map((item, idx) => {
+            {topProducts.map((item, idx) => {
               const displayPrice = getDisplayPrice(item);
 
               return (
                 <article
                   key={item.product_id}
-                  className="flex flex-col rounded-2xl border bg-white shadow-sm p-4 gap-2"
+                  className="flex flex-col rounded-2xl border bg-white shadow-sm p-4"
                 >
-                  {/* 상단 메타 정보 */}
-                  <div className="flex items-center justify-between text-[11px] text-gray-500">
-                    <span className="inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-semibold text-purple-700">
-                      추천 {idx + 1}
-                    </span>
-                    <span>
-                      {item.region} · {item.place_type}
-                    </span>
-                  </div>
-
-                  <h3 className="mt-1 text-sm font-semibold leading-snug line-clamp-2">
+                  <h3 className="text-sm font-semibold leading-snug">
                     {item.product_name}
                   </h3>
-                  <p className="text-[11px] text-gray-500">{item.category}</p>
                   {displayPrice && (
-                    <p className="mt-1 text-sm font-semibold">
+                    <p className="mt-2 text-base font-bold text-blue-600">
                       {displayPrice}
                     </p>
                   )}
-
-                  {/* 옵션 요약 (옵션 이름만 간단히 표시) */}
-                  {item.options.length > 0 && (
-                    <p className="mt-1 text-[11px] text-gray-500 line-clamp-2">
-                      {item.options
-                        .map((opt) => opt.option_name)
-                        .slice(0, 3)
-                        .join(" · ")}
-                      {item.options.length > 3 && " · ..."}
-                    </p>
-                  )}
-
-                  {/* 상품 코드 */}
-                  <p className="mt-2 text-[11px] text-gray-400">
-                    상품 코드: {item.product_id}
-                  </p>
                 </article>
               );
             })}
