@@ -12,7 +12,6 @@ type RecommendRequest = {
   companion_age_groups: string[];
 };
 
-// 백엔드 응답 타입
 type Price = {
   age_type: string;
   price_text: string;
@@ -31,14 +30,13 @@ type Product = {
   place_type: string;
   category: string;
   options: Option[];
+  description?: string; // 🔥 추가
 };
 
 type RecommendResponse = {
-  products: Product[];
-  report: string;
+  products: Product[];   // 🔥 report 제거
 };
 
-// 카드에 보여줄 대표 가격
 const getDisplayPrice = (product: Product): string => {
   const firstOpt = product.options[0];
   const firstPrice = firstOpt?.prices[0];
@@ -50,7 +48,6 @@ export default function Result() {
   const location = useLocation();
   const requestBody = location.state as RecommendRequest | undefined;
 
-  // 어떤 카드가 선택돼 있는지 (인덱스)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   if (!requestBody) {
@@ -71,35 +68,21 @@ export default function Result() {
     );
   }
 
-  const {
-    data,
-    loading,
-    error,
-    execute: fetchRecommend,
-  } = useFetch<RecommendRequest, RecommendResponse>(
-    "http://localhost:8000/recommend",
-  );
+  const { data, loading, error, execute: fetchRecommend } =
+    useFetch<RecommendRequest, RecommendResponse>(
+      "http://localhost:8000/recommend",
+    );
 
   const handleRecommend = () => {
     fetchRecommend(requestBody).catch(() => {});
   };
 
   const products = data?.products ?? [];
-  const report = data?.report ?? "";
-
-  // 보고서 텍스트를 문단 단위로 쪼갬 (빈 줄 기준)
-  const reportBlocks = report ? report.split(/\n{2,}/) : [];
-
-  // 상위 5개만 사용
   const topProducts = products.slice(0, 5);
 
-  // 선택된 패키지
   const selectedProduct =
     selectedIndex !== null ? topProducts[selectedIndex] : null;
-
-  // 선택된 패키지에 매칭되는 설명(있으면)
-  const selectedReport =
-    selectedIndex !== null ? reportBlocks[selectedIndex] ?? "" : "";
+  const selectedDescriptionHtml = selectedProduct?.description ?? "";
 
   return (
     <main className="page-main min-h-screen px-6 py-6">
@@ -108,24 +91,21 @@ export default function Result() {
         버튼을 누르면 서버에서 추천 결과를 받아옵니다.
       </p>
 
-      {/* 추천 요청 버튼 */}
-        <button
-          type="button"
-          onClick={handleRecommend}
-          disabled={loading}
-          className="mt-6 w-full h-14 rounded-2xl bg-gray-800 text-white disabled:bg-gray-400"
-        >
-          {loading ? "추천 불러오는 중..." : "추천 받기"}
-        </button>
+      <button
+        type="button"
+        onClick={handleRecommend}
+        disabled={loading}
+        className="mt-6 w-full h-14 rounded-2xl bg-gray-800 text-white disabled:bg-gray-400"
+      >
+        {loading ? "추천 불러오는 중..." : "추천 받기"}
+      </button>
+
       {error && (
         <p className="mt-3 text-sm text-red-500">
           에러가 발생했습니다. 잠시 후 다시 시도해주세요.
         </p>
       )}
 
-      {/* ─────────────────────────────
-          상품 카드 그리드 (최대 5개, 한 줄)
-          ───────────────────────────── */}
       <section className="mt-8">
         <h3 className="text-sm font-medium mb-3 text-center">
           추천 패키지
@@ -174,9 +154,6 @@ export default function Result() {
         )}
       </section>
 
-      {/* ─────────────────────────────
-          선택한 패키지 상세 + 설명
-          ───────────────────────────── */}
       {selectedProduct && (
         <section className="mt-10">
           <h3 className="text-base font-semibold mb-3 text-center">
@@ -188,7 +165,6 @@ export default function Result() {
               {selectedProduct.product_name}
             </h4>
 
-            {/* 옵션 / 가격 요약 */}
             {selectedProduct.options.length > 0 && (
               <div className="mt-3 text-xs text-gray-600">
                 {selectedProduct.options.map((opt) => (
@@ -204,17 +180,19 @@ export default function Result() {
               </div>
             )}
 
-            {/* LLM이 만든 설명 매칭 */}
-            {selectedReport && (
+            {selectedDescriptionHtml ? (
               <>
                 <div className="mt-4 mb-2 inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">
                   추천 포인트 {selectedIndex! + 1}
                 </div>
-                <p className="whitespace-pre-line mt-1">{selectedReport.trim()}</p>
+                <div
+                  className="mt-1 text-sm leading-relaxed text-gray-700"
+                  dangerouslySetInnerHTML={{
+                    __html: selectedDescriptionHtml,
+                  }}
+                />
               </>
-            )}
-
-            {!selectedReport && (
+            ) : (
               <p className="mt-4 text-xs text-gray-500">
                 이 패키지에 대한 추가 설명이 없습니다. 위 기본 정보를 참고해주세요.
               </p>

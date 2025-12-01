@@ -38,7 +38,7 @@ def build_pickle():
     print(f"총 {total}개의 여행로그를 불러왔습니다.")
 
     # 🔸 개발용: 임베딩 돌릴 로그 개수 제한
-    MAX_LOGS = 10  # 너무 오래 걸리면 10, 20 이런 식으로 더 줄여도 됨
+    MAX_LOGS = 30  # 너무 오래 걸리면 10, 20 이런 식으로 더 줄여도 됨
     if total > MAX_LOGS:
         print(f"개발 편의를 위해 상위 {MAX_LOGS}개만 임베딩 생성합니다.")
         logs = logs[:MAX_LOGS]

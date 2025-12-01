@@ -234,4 +234,3 @@ def recommend(req: RecommendRequest):
     return {
         "products": results
     }
-
