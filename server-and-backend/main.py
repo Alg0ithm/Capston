@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 
 import numpy as np
+import markdown2
 
 from embeddings import load_embeddings, embedding_query
 from db import *
@@ -71,6 +72,9 @@ class ProductOut(BaseModel):
     place_type: str
     category: str
     options: List[OptionOut]
+    # 👇 LLM이 만들어준 상품 설명(마크다운)이 들어갈 자리
+    description: Optional[str] = None
+
 
 
 @app.post("/recommend")
@@ -188,10 +192,45 @@ def recommend(req: RecommendRequest):
 
         results.append(p_out)
 
-    report = create_report([p.dict() for p in results])
+    # 6) LLM 보고서 생성 (마크다운 문자열 한 덩어리)
+    report_markdown = create_report([p.dict() for p in results])
 
-    # 7) products + report 함께 반환
+    # 6-1) SPLIT 기준으로 쪼개기
+    split_blocks = [
+        block.strip()
+        for block in report_markdown.split("<<<SPLIT>>>")
+        if block.strip()
+    ]
+
+    # 6-2) HTML 변환
+    html_blocks = [markdown2.markdown(block) for block in split_blocks]
+
+    # 🔥 핵심: 상품명 기반 매칭
+    assigned = set()  # 이미 사용한 블록 index 기록
+
+    for product in results:
+        matched_html = None
+        pname = product.product_name.replace("[예약금상품] ", "").strip()
+
+        for idx, html in enumerate(html_blocks):
+            if idx in assigned:
+                continue
+
+            # 상품명이 들어있으면 해당 블록 매칭
+            if pname in html:
+                matched_html = html
+                assigned.add(idx)
+                break
+
+        # 설명 매칭 성공 시
+        if matched_html:
+            product.description = matched_html
+        else:
+            # 매칭 실패 시 fallback 메시지
+            product.description = f"<p><strong>{product.product_name}</strong> 관련 설명을 생성하지 못했습니다.</p>"
+
+
+    # 7) 이제 report는 안 쓰고, 상품 리스트만 반환
     return {
-        "products": results,
-        "report": report
+        "products": results
     }
